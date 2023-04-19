@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+</head>
+
+<body>
+    <h1>TO-DO LIST</h1>
+    <input class="input-field" type="text" placeholder="Cosa dovevo fare!?">
+    <button class="submit" type="button">AGGIUNGI EVENTO</button>
+    <ol class="list"></ol>
+    <script>
+        const eventList = [];
+        const inputBox = document.querySelector('.input-field');
+        const submit = document.querySelector('.submit');
+        const itemsList = document.querySelector('.list')
+
+        function addEvent() {
+            const showEvent = inputBox.value.trim();
+            if (showEvent == '') {
+                alert('inserisci un evento');
+            } else {
+                updateListItems(showEvent);
+                saveStorage();
+                inputBox.value = '';
+            };
+        };
+
+
+
+        function updateListItems(showEvent) {
+            const li = document.createElement('li');
+            const deleteButton = document.createElement('button');
+
+            li.textContent = showEvent;
+            deleteButton.innerHTML = 'Delete Event';
+            deleteButton.addEventListener('click', removeEvent); // Add remove function handler
+
+            li.appendChild(deleteButton);
+            itemsList.appendChild(li);
+            eventList.push(showEvent);
+
+        };
+
+
+
+        function removeEvent(e) {
+            const item = e.target.closest('li');
+            const items = item.parentNode.children;
+
+            let index;
+
+            for (let i = 0; i < items.length; i++) {
+                index = i;
+                break;
+            }
+            item.remove();
+            eventList.splice(index, 1);
+            saveStorage();
+        };
+
+
+        function saveStorage() {
+            return saveLocal = localStorage.setItem('events', JSON.stringify(eventList));
+        }
+
+        function loadStorage() {
+            const restoreLocal = JSON.parse(localStorage.getItem('events'));
+
+            restoreLocal?.forEach(function (item, index) {
+                const li = document.createElement('li');
+                const deleteButton = document.createElement('button');
+
+                li.textContent = item;
+                deleteButton.innerHTML = 'Delete Event';
+                deleteButton.addEventListener('click', removeEvent); // Add remove function handler
+
+                li.appendChild(deleteButton);
+                itemsList.appendChild(li);
+            });
+        }
+
+
+        addEventListener('DOMContentLoaded', loadStorage);
+
+
+        submit.addEventListener('click', addEvent);
+    </script>
+</body>
+
+</html>
